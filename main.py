@@ -23,27 +23,33 @@
 #  
 
 import wx
+from useraccount import UserAccount_Panel
+
 print wx.version()
 
-class MainUI_Syntax(wx.Frame):
+class SyntaxMainUI(wx.Frame):
     def __init__(self, *args, **kwargs):
-        super(MainUI_Syntax, self).__init__(*args, **kwargs)
+        super(SyntaxMainUI, self).__init__(*args, **kwargs)
         self.Centre()
         self.__Generate_Menubar()
+        self.Statusbar = wx.StatusBar(self)
+        self.SetStatusBar(self.Statusbar)
     def __Generate_Menubar(self):
         self.Menubar = wx.MenuBar()
         self.MenubarFile = wx.Menu()
         self.MenubarEdit = wx.Menu()
         self.MenubarHelp = wx.Menu()
-		
+        
         id_FILE_OPEN = wx.NewId()
-        id_FILE_QUIT = wx.NewId()
-        id_HELP_ABOUT = wx.NewId()
+        id_EDIT_PREF = wx.NewId()
 		
         self.MenubarFile.Append(id_FILE_OPEN, "&Open", "Open a file")
         self.MenubarFile.AppendSeparator()
         self.MenubarFile.Append(wx.ID_EXIT, "&Quit", "Quit the Program")
-		
+        
+        self.MenubarEdit.Append(id_EDIT_PREF, "Preferences", "Set Syntax Preferences")
+
+        self.MenubarHelp.Append(wx.ID_HELP, "&Help")
         self.MenubarHelp.Append(wx.ID_ABOUT, "About")
 		
         self.Menubar.Append(self.MenubarFile, "File")
@@ -60,7 +66,7 @@ class MainUI_Syntax(wx.Frame):
         helpDialog = wx.MessageDialog(self, "An Open Source Language Learning Program", "Syntax", wx.OK)
         helpDialog.ShowModal()
         helpDialog.Destroy()
-class App_Syntax(wx.App):
+class SyntaxApp(wx.App):
     loading = True
 	
     def OnInit(self):
@@ -69,13 +75,16 @@ class App_Syntax(wx.App):
         self.img = wx.BitmapFromImage(self.img)
         self.splashscreen = wx.SplashScreen(self.img, 
             wx.SPLASH_CENTRE_ON_SCREEN, 2000, None)
-        self.UI = MainUI_Syntax(None, wx.ID_ANY, "Syntax")
+        self.UI = SyntaxMainUI(None, wx.ID_ANY, "Syntax", size=(800,600))
         self.UI.Show(True)
         self.splashscreen.Destroy()
         return True
-
+    def CreateUserAcctPanel(self):
+        self.userAcctPanel = UserAccount_Panel(self.UI)
+        
 def main():
-    app = App_Syntax()
+    app = SyntaxApp()
+    app.CreateUserAcctPanel()
     app.MainLoop()
     return 0
 
